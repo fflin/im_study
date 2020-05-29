@@ -20,6 +20,14 @@ public class UDPUtils {
     public UDPUtils() {
     }
 
+    /**
+     * 发送消息，消息已经转为byte数组，转byte前的bean
+     * @see com.hengxin.imsdk.server.Protocal
+     * @param skt 使用UDP连接的socket，客户端不需要先连接数据，可以直接发送给服务端
+     * @param d json转换后的byte
+     * @param dataLen byte长度
+     * @return 发送是否成功
+     */
     public static boolean send(DatagramSocket skt, byte[] d, int dataLen) {
         if (skt != null && d != null) {
             try {

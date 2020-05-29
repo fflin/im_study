@@ -61,6 +61,10 @@ public class LocalUDPDataSender {
         return code;
     }
 
+    /**
+     * 发送心跳消息
+     * @return 发送是否成功
+     */
     int sendKeepAlive() {
         byte[] b = ProtocalFactory.createPKeepAlive(ClientCoreSDK.getInstance().getCurrentLoginUserId()).toBytes();
         return this.send(b, b.length);

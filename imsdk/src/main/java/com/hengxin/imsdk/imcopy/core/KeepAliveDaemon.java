@@ -13,7 +13,7 @@ import java.util.Observer;
 /**
  * author : fflin
  * date   : 2020/5/27 20:15
- * desc   : 保持连接---心跳---
+ * desc   : 保持连接和产生心跳的进程
  * version: 1.0
  */
 public class KeepAliveDaemon {
@@ -21,7 +21,7 @@ public class KeepAliveDaemon {
     private static final String TAG = KeepAliveDaemon.class.getSimpleName();
     private static KeepAliveDaemon instance = null;
     public static int NETWORK_CONNECTION_TIME_OUT = 10000;
-    public static int KEEP_ALIVE_INTERVAL = 3000;
+    public static int KEEP_ALIVE_INTERVAL = 10000;
     private boolean keepAliveRunning = false;
     private long lastGetKeepAliveResponseFromServerTimstamp = 0L;
     private Observer networkConnectionLostObserver = null;
@@ -44,6 +44,10 @@ public class KeepAliveDaemon {
         this.init();
     }
 
+    /**
+     * 初始化心跳进程，调用时机在登录页面onCreate时，程序已封装到
+     * @see com.hengxin.imstudy.IMClientManager
+     */
     private void init() {
         if (!this.init) {
             this.handler = new Handler();
@@ -58,7 +62,7 @@ public class KeepAliveDaemon {
                                 if (ClientCoreSDK.DEBUG) {
                                     Log.d(KeepAliveDaemon.TAG, "【IMCORE】心跳线程执行中...");
                                 }
-
+                                // 发送心跳包
                                 int code = LocalUDPDataSender.getInstance(KeepAliveDaemon.this.context).sendKeepAlive();
                                 return code;
                             }

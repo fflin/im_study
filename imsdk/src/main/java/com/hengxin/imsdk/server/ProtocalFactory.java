@@ -17,6 +17,11 @@ public class ProtocalFactory {
     public ProtocalFactory() {
     }
 
+    /**
+     * 就是对象转json 消息格式虽然不是xmpp格式，但是用的json格式又有多大优势？其实我想学习的是ProtoBuf，把作者的逻辑思想搞明白吧先
+     * @param c 要转json的对象
+     * @return json
+     */
     private static String create(Object c) {
         return (new Gson()).toJson(c);
     }
@@ -41,6 +46,11 @@ public class ProtocalFactory {
         return (PKeepAliveResponse)parse(dataContentOfProtocal, PKeepAliveResponse.class);
     }
 
+    /**
+     * 创建心跳消息
+     * @param from_user_id 登录用户id
+     * @return 心跳消息数据包
+     */
     public static Protocal createPKeepAlive(String from_user_id) {
         return new Protocal(1, create(new PKeepAlive()), from_user_id, "0");
     }

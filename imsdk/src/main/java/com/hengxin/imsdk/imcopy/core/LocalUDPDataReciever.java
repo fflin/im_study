@@ -59,6 +59,9 @@ public class LocalUDPDataReciever {
 
     }
 
+    /**
+     * 侦听消息
+     */
     public void startup() {
         this.stop();
 
@@ -88,6 +91,10 @@ public class LocalUDPDataReciever {
         return this.init;
     }
 
+    /**
+     * 死循环一直在侦听
+     * @throws Exception
+     */
     private void udpListeningImpl() throws Exception {
         while(true) {
             byte[] data = new byte[1024];

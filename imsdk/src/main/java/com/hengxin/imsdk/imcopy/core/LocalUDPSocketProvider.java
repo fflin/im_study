@@ -10,7 +10,7 @@ import java.net.DatagramSocket;
 /**
  * author : fflin
  * date   : 2020/5/29 16:02
- * desc   :
+ * desc   : 本地UDP连接侦听的管理类 负责开关 重置连接
  * version: 1.0
  */
 public class LocalUDPSocketProvider {
