@@ -143,4 +143,19 @@ public class Protocal {
     public static String genFingerPrint() {
         return UUID.randomUUID().toString();
     }
+
+    @Override
+    public String toString() {
+        return "Protocal{" +
+                "bridge=" + bridge +
+                ", type=" + type +
+                ", dataContent='" + dataContent + '\'' +
+                ", from='" + from + '\'' +
+                ", to='" + to + '\'' +
+                ", fp='" + fp + '\'' +
+                ", QoS=" + QoS +
+                ", typeu=" + typeu +
+                ", retryCount=" + retryCount +
+                '}';
+    }
 }

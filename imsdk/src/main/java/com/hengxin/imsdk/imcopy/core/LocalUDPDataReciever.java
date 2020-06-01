@@ -20,7 +20,7 @@ import java.util.Observer;
 /**
  * author : fflin
  * date   : 2020/5/29 16:04
- * desc   :
+ * desc   : 接收消息
  * version: 1.0
  */
 public class LocalUDPDataReciever {
@@ -60,7 +60,7 @@ public class LocalUDPDataReciever {
     }
 
     /**
-     * 侦听消息
+     * 登录以后调用这个方法，侦听消息
      */
     public void startup() {
         this.stop();
@@ -109,6 +109,9 @@ public class LocalUDPDataReciever {
         }
     }
 
+    /**
+     * 处理收到的消息
+     */
     private static class MessageHandler extends Handler {
         private Context context = null;
 
@@ -116,11 +119,21 @@ public class LocalUDPDataReciever {
             this.context = context;
         }
 
+        /**
+         * 心跳包 {bridge=false, type=51, dataContent='{}', from='0', to='Demo', fp='null', QoS=false, typeu=-1, retryCount=0}
+         *
+         * 发送的消息是 {"QoS":true,"bridge":false,"dataContent":"999","fp":"c42f7497-cdbe-46b1-be95-de4c9528bb82","from":"Demo","to":"App","type":2,"typeu":-1}
+         * 发送消息的回执 {bridge=false, type=4, dataContent='c42f7497-cdbe-46b1-be95-de4c9528bb82', from='App', to='Demo', fp='null', QoS=false, typeu=-1, retryCount=0}
+         *
+         * 收到的消息 {bridge=false, type=2, dataContent='Good morning 11111111', from='App', to='Demo', fp='715c0889-d9a8-45c8-9b89-71e76a0a32b2', QoS=true, typeu=-1, retryCount=0}
+         * @param msg
+         */
         public void handleMessage(Message msg) {
             DatagramPacket packet = (DatagramPacket)msg.obj;
             if (packet != null) {
                 try {
                     Protocal pFromServer = ProtocalFactory.parse(packet.getData(), packet.getLength());
+                    Log.d(LocalUDPDataReciever.TAG, "pFromServer -- "+pFromServer.toString());
                     if (pFromServer.isQoS()) {
                         if (pFromServer.getType() == 50 && ProtocalFactory.parsePLoginInfoResponse(pFromServer.getDataContent()).getCode() != 0) {
                             if (ClientCoreSDK.DEBUG) {
@@ -143,12 +156,14 @@ public class LocalUDPDataReciever {
                     }
 
                     switch(pFromServer.getType()) {
+                        // 收到的聊天消息 解析并处理消息
                         case 2:
                             if (ClientCoreSDK.getInstance().getChatTransDataEvent() != null) {
                                 ClientCoreSDK.getInstance().getChatTransDataEvent().onTransBuffer(pFromServer.getFp(), pFromServer.getFrom(), pFromServer.getDataContent(), pFromServer.getTypeu());
                             }
                             break;
                         case 4:
+                            // 收到消息的指纹是发送消息的fp字段
                             String theFingerPrint = pFromServer.getDataContent();
                             if (ClientCoreSDK.DEBUG) {
                                 Log.d(LocalUDPDataReciever.TAG, "【IMCORE】【QoS】收到" + pFromServer.getFrom() + "发过来的指纹为" + theFingerPrint + "的应答包.");
